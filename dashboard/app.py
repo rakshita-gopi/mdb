@@ -1038,9 +1038,9 @@ def main() -> None:
         format_func=lambda name: f"{NAV_ICONS.get(name, '•')}  {name}",
         label_visibility="collapsed",
     )
-    st.sidebar.markdown("---")
-    st.sidebar.caption("Live data from MongoDB. Run `python run_pipeline.py --all` if a page is empty.")
-    st.sidebar.caption("Motion powered by [GSAP](https://gsap.com/).")
+    # st.sidebar.markdown("---")
+    # st.sidebar.caption("Live data from MongoDB. Run `python run_pipeline.py --all` if a page is empty.")
+    # st.sidebar.caption("Motion powered by [GSAP](https://gsap.com/).")
 
     db = get_db()
     pages = {
