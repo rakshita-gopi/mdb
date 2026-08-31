@@ -37,6 +37,11 @@ from src.database.mongodb_connection import (  # noqa: E402
 )
 from src.sentiment_analysis.sentiment_analyzer import analyse_text  # noqa: E402
 
+try:
+    from dashboard.gsap_runtime import inject_gsap
+except ImportError:  # streamlit run dashboard/app.py puts this folder first on sys.path
+    from gsap_runtime import inject_gsap
+
 st.set_page_config(
     page_title="Sentiment Analysis · MapReduce",
     page_icon="📊",
@@ -75,33 +80,29 @@ html, body, [class*="css"] {
 .block-container {
     padding-top: 1.1rem;
     padding-bottom: 2.4rem;
-    animation: fadeUp 0.55s ease both;
 }
 
-@keyframes fadeUp {
-    from { opacity: 0; transform: translateY(18px); }
-    to { opacity: 1; transform: translateY(0); }
+.hero h1 .gsap-ch {
+    display: inline-block;
+    will-change: transform, opacity;
 }
-@keyframes floaty {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-6px); }
+
+[data-testid="stIFrame"] {
+    height: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    border: 0 !important;
 }
-@keyframes shimmer {
-    0% { background-position: 0% 50%; }
-    100% { background-position: 200% 50%; }
-}
+
 @keyframes pulseDot {
     0%, 100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.55); }
     70% { box-shadow: 0 0 0 8px rgba(52, 211, 153, 0); }
 }
-@keyframes flow {
-    0% { transform: translateX(-6px); opacity: 0.35; }
-    50% { transform: translateX(6px); opacity: 1; }
-    100% { transform: translateX(-6px); opacity: 0.35; }
-}
-@keyframes barFill {
-    from { transform: scaleX(0); }
-    to { transform: scaleX(1); }
+@keyframes shimmer {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
 }
 
 section[data-testid="stSidebar"] {
@@ -183,7 +184,6 @@ section[data-testid="stSidebar"] label[data-baseweb="radio"]:hover {
     top: -40px;
     border-radius: 50%;
     background: radial-gradient(circle, rgba(56, 189, 248, 0.28), transparent 70%);
-    animation: floaty 5.5s ease-in-out infinite;
 }
 .hero-kicker {
     font-size: 0.75rem;
@@ -220,18 +220,7 @@ section[data-testid="stSidebar"] label[data-baseweb="radio"]:hover {
     border: 1px solid rgba(148, 163, 184, 0.22);
     background: rgba(15, 23, 42, 0.18);
     backdrop-filter: blur(10px);
-    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-    animation: fadeUp 0.6s ease both;
 }
-.kpi-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 16px 30px rgba(0, 0, 0, 0.16);
-    border-color: rgba(56, 189, 248, 0.4);
-}
-.kpi-card:nth-child(1) { animation-delay: 0.05s; }
-.kpi-card:nth-child(2) { animation-delay: 0.12s; }
-.kpi-card:nth-child(3) { animation-delay: 0.19s; }
-.kpi-card:nth-child(4) { animation-delay: 0.26s; }
 .kpi-label {
     font-size: 0.78rem;
     opacity: 0.68;
@@ -263,10 +252,7 @@ section[data-testid="stSidebar"] label[data-baseweb="radio"]:hover {
     padding: 0.9rem 0.95rem;
     border: 1px solid rgba(148, 163, 184, 0.2);
     background: rgba(255, 255, 255, 0.03);
-    transition: transform 0.22s ease, border-color 0.22s ease;
-    animation: fadeUp 0.55s ease both;
 }
-.tech-card:hover { transform: translateY(-4px); border-color: rgba(167, 139, 250, 0.45); }
 .tech-k { font-size: 0.72rem; opacity: 0.6; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
 .tech-v { font-size: 0.98rem; font-weight: 700; margin-top: 0.2rem; }
 
@@ -284,15 +270,13 @@ section[data-testid="stSidebar"] label[data-baseweb="radio"]:hover {
     font-size: 0.86rem;
     border: 1px solid rgba(56, 189, 248, 0.28);
     background: rgba(56, 189, 248, 0.10);
-    animation: fadeUp 0.5s ease both;
 }
-.pipe-step:nth-child(1) { animation-delay: 0.05s; }
-.pipe-step:nth-child(3) { animation-delay: 0.15s; background: rgba(167, 139, 250, 0.12); border-color: rgba(167, 139, 250, 0.3); }
-.pipe-step:nth-child(5) { animation-delay: 0.25s; background: rgba(52, 211, 153, 0.12); border-color: rgba(52, 211, 153, 0.3); }
+.pipe-step:nth-child(3) { background: rgba(167, 139, 250, 0.12); border-color: rgba(167, 139, 250, 0.3); }
+.pipe-step:nth-child(5) { background: rgba(52, 211, 153, 0.12); border-color: rgba(52, 211, 153, 0.3); }
 .pipe-arrow {
     opacity: 0.7;
     font-weight: 800;
-    animation: flow 1.6s ease-in-out infinite;
+    display: inline-block;
 }
 
 .empty-note {
@@ -311,7 +295,6 @@ section[data-testid="stSidebar"] label[data-baseweb="radio"]:hover {
     border-radius: 18px;
     padding: 1.05rem 1.15rem;
     border: 1px solid rgba(148, 163, 184, 0.22);
-    animation: fadeUp 0.45s ease both;
 }
 .score-track {
     height: 10px;
@@ -323,16 +306,10 @@ section[data-testid="stSidebar"] label[data-baseweb="radio"]:hover {
 .score-fill {
     height: 100%;
     border-radius: 999px;
-    transform-origin: left;
-    animation: barFill 0.8s ease both;
 }
 
 div[data-testid="stPlotlyChart"] {
-    animation: fadeUp 0.7s ease both;
     min-height: 280px;
-}
-div[data-testid="stDataFrame"] {
-    animation: fadeUp 0.55s ease both;
 }
 .stButton > button {
     border-radius: 12px;
@@ -1063,11 +1040,9 @@ def main() -> None:
     )
     st.sidebar.markdown("---")
     st.sidebar.caption("Live data from MongoDB. Run `python run_pipeline.py --all` if a page is empty.")
+    st.sidebar.caption("Motion powered by [GSAP](https://gsap.com/).")
 
     db = get_db()
-    if db is None:
-        return
-
     pages = {
         "Project overview": page_overview,
         "Dataset overview": page_dataset,
@@ -1076,7 +1051,9 @@ def main() -> None:
         "Analytics": page_analytics,
         "Model evaluation": page_evaluation,
     }
-    pages[page](db)
+    if db is not None:
+        pages[page](db)
+    inject_gsap()
 
 
 if __name__ == "__main__":
