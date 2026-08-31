@@ -1,0 +1,45 @@
+# Environment and secrets
+.env
+.venv/
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+
+# NLTK downloaded data
+nltk_data/
+*.nltk
+
+# Large / generated datasets
+data/raw/*.csv
+data/processed/*.csv
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Generated results (keep folder)
+results/*.csv
+results/*.json
+results/*.png
+!results/.gitkeep
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+Thumbs.db
+.DS_Store
+
+# Hugging Face cache leftovers in project
+.cache/
